@@ -1,0 +1,31 @@
+/* Full width and full height page.
+   This also overrides the default Vite App.css (#root max-width / padding / centering). */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  max-width: none;
+  text-align: left;
+  display: block;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;   /* fallback */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+.app > .hero {
+  flex: 1;
+  width: 100%;
+  min-height: 100svh;
+}

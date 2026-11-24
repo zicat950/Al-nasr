@@ -1,0 +1,707 @@
+/* =====================================================
+   AL NASR – Luxury Navbar (always visible, desktop + mobile)
+   ===================================================== */
+
+:root {
+  --an-beige: #b5a689;
+  --an-ivory: #f1f2ec;
+  --an-ink: #26372d;
+  --an-olive: #344638;
+  --an-gold: #a88b5b;
+  --an-white: #ffffff;
+  --an-line: rgba(181, 166, 137, 0.45);
+  --an-serif: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
+  --an-sans: "Jost", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --an-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --an-pad: clamp(20px, 4vw, 56px);
+
+  /* layout heights (used by the fixed shell AND the spacer) */
+  --nb-ann: 36px;
+  --nb-h: 84px;
+  --nb-h-solid: 72px;
+
+  /* below this width the 8 menu labels + 4 icons no longer fit → burger menu.
+     (If icons ever get cut off on your screen, raise 1380px here AND in the two @media rules below.) */
+}
+
+@media (max-width: 1380px) {
+  :root {
+    --nb-h: 68px;
+    --nb-h-solid: 62px;
+  }
+}
+
+/* Add to index.html <head> for the intended typography:
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+*/
+
+/* ---------- Fixed shell (announcement + navbar) ---------- */
+.nb-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  width: 100%;
+}
+
+/* pushes page content below the fixed navbar */
+.nb-spacer {
+  height: calc(var(--nb-ann) + var(--nb-h));
+  pointer-events: none;
+}
+/* hero pages: no spacer, the hero sits under the transparent navbar */
+.nb-spacer.is-overlay {
+  height: 0;
+}
+
+/* ---------- Announcement bar ---------- */
+.nb-announce {
+  background: var(--an-olive);
+  color: var(--an-ivory);
+  height: var(--nb-ann);
+  position: relative;
+  overflow: hidden;
+  transition: height 0.5s var(--an-ease);
+}
+.nb-shell.is-scrolled .nb-announce {
+  height: 0;
+}
+.nb-announce-inner {
+  height: var(--nb-ann);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+.nb-announce p {
+  margin: 0;
+  font-family: var(--an-sans);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Header ---------- */
+.nb {
+  position: relative;
+  width: 100%;
+  font-family: var(--an-sans);
+  color: var(--an-ink);
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.45s var(--an-ease),
+    border-color 0.45s var(--an-ease),
+    backdrop-filter 0.45s var(--an-ease);
+}
+.nb.is-solid {
+  background: rgba(241, 242, 236, 0.98);
+  border-bottom-color: var(--an-line);
+}
+.nb.is-clear {
+  background: transparent;
+}
+.nb.is-clear,
+.nb.is-clear .nb-link,
+.nb.is-clear .nb-icon-btn {
+  color: var(--an-ivory);
+}
+
+/* FIX: the middle menu may shrink, the logo and the icon group never do —
+   so the bag / wishlist / account icons can no longer be pushed off screen */
+.nb-bar {
+  max-width: 1720px;
+  margin: 0 auto;
+  height: var(--nb-h);
+  padding: 0 var(--an-pad);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 24px);
+  transition: height 0.45s var(--an-ease);
+}
+.nb.is-solid .nb-bar {
+  height: var(--nb-h-solid);
+}
+
+/* ---------- Logo (image) ---------- */
+.nb-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.nb-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  line-height: 0;
+}
+.nb-logo-img {
+  display: block;
+  height: 52px;          /* 👈 adjust logo size here */
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  user-select: none;
+  transition: height 0.45s var(--an-ease), opacity 0.35s ease, filter 0.4s ease;
+}
+.nb.is-solid .nb-logo-img {
+  height: 44px;
+}
+.nb-logo:hover .nb-logo-img {
+  opacity: 0.85;
+}
+
+/* Turns a single-color dark logo ivory while the navbar is transparent over a dark hero.
+   DELETE this rule if your logo has its own colors or the hero is light. */
+.nb.is-clear .nb-logo-img {
+  filter: brightness(0) invert(1);
+}
+
+.nb-star {
+  color: var(--an-gold);
+  flex-shrink: 0;
+}
+
+/* ---------- Center links ---------- */
+.nb-center {
+  justify-self: center;
+  min-width: 0;
+}
+.nb-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: clamp(10px, 1.25vw, 30px);
+}
+.nb-link-wrap {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.nb-link {
+  position: relative;
+  display: inline-block;
+  padding: 30px 0;
+  font-size: clamp(9.5px, 0.7vw, 11.5px);
+  font-weight: 400;
+  letter-spacing: clamp(0.08em, 0.12vw, 0.2em);
+  text-transform: uppercase;
+  color: var(--an-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.35s ease;
+}
+.nb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  height: 1px;
+  background: var(--an-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--an-ease);
+}
+.nb-link:hover,
+.nb-link.is-open,
+.nb-link.is-active {
+  color: var(--an-gold);
+}
+.nb-link:hover::after,
+.nb-link.is-open::after,
+.nb-link.is-active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.nb.is-clear .nb-link:hover,
+.nb.is-clear .nb-link.is-open,
+.nb.is-clear .nb-link.is-active {
+  color: var(--an-beige);
+}
+
+.nb-chevron {
+  background: none;
+  border: 0;
+  padding: 4px;
+  cursor: pointer;
+  color: inherit;
+  display: inline-flex;
+  opacity: 0.6;
+  transition: transform 0.4s var(--an-ease), opacity 0.3s;
+}
+.nb.is-clear .nb-chevron { color: var(--an-ivory); }
+.nb-chevron[aria-expanded="true"] {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ---------- Right actions ---------- */
+.nb-actions {
+  justify-self: end;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nb-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--an-ink);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+.nb-icon-btn:hover {
+  color: var(--an-gold);
+  background: rgba(181, 166, 137, 0.16);
+}
+.nb-badge {
+  position: absolute;
+  top: 3px;
+  right: 1px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--an-olive);
+  color: var(--an-ivory);
+  font-size: 9.5px;
+  font-weight: 500;
+  line-height: 17px;
+  text-align: center;
+  transition: opacity 0.3s;
+}
+.nb-badge.is-empty { opacity: 0.55; background: var(--an-beige); color: var(--an-olive); }
+.nb-badge-soft { background: var(--an-gold); }
+
+.nb-burger { display: none; }
+
+/* focus visibility */
+.nb a:focus-visible,
+.nb button:focus-visible,
+.nb-search button:focus-visible,
+.nb-search input:focus-visible,
+.nb-m-panel a:focus-visible,
+.nb-m-panel button:focus-visible {
+  outline: 1px solid var(--an-gold);
+  outline-offset: 3px;
+}
+
+/* ---------- Mega menu ---------- */
+.nb-mega {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--an-ivory);
+  border-top: 1px solid var(--an-line);
+  border-bottom: 1px solid var(--an-line);
+  color: var(--an-ink);
+  max-height: calc(100vh - var(--nb-h-solid) - 20px);
+  overflow-y: auto;
+}
+.nb-mega-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 48px var(--an-pad) 52px;
+}
+.nb-mega-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(32px, 5vw, 88px);
+  align-items: stretch;
+}
+.nb-eyebrow {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--an-gold);
+  margin-bottom: 14px;
+}
+.nb-mega-title {
+  margin: 0 0 10px;
+  font-family: var(--an-serif);
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 500;
+  color: var(--an-olive);
+  line-height: 1.05;
+}
+.nb-mega-blurb {
+  margin: 0 0 26px;
+  max-width: 380px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(38, 55, 45, 0.72);
+  font-weight: 300;
+}
+.nb-mega-links ul {
+  list-style: none;
+  margin: 0 0 30px;
+  padding: 0;
+}
+.nb-mega-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 400px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--an-line);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--an-ink);
+  text-decoration: none;
+  transition: color 0.3s ease, padding-left 0.45s var(--an-ease);
+}
+.nb-mega-link svg {
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.45s var(--an-ease);
+  color: var(--an-gold);
+}
+.nb-mega-link:hover {
+  color: var(--an-gold);
+  padding-left: 8px;
+}
+.nb-mega-link:hover svg {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nb-cta {
+  display: inline-block;
+  padding: 15px 34px;
+  background: var(--an-olive);
+  color: var(--an-ivory);
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--an-olive);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+.nb-cta:hover {
+  background: transparent;
+  color: var(--an-olive);
+  border-color: var(--an-gold);
+}
+
+/* editorial image panel with arch top */
+.nb-mega-visual {
+  position: relative;
+  display: block;
+  min-height: 340px;
+  overflow: hidden;
+  border-radius: 200px 200px 2px 2px;
+  background:
+    repeating-linear-gradient(45deg, rgba(168, 139, 91, 0.12) 0 1px, transparent 1px 14px),
+    var(--an-beige);
+  text-decoration: none;
+}
+.nb-mega-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 1.2s var(--an-ease);
+}
+.nb-mega-visual:hover .nb-mega-img {
+  transform: scale(1.05);
+}
+.nb-mega-frame {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(241, 242, 236, 0.7);
+  border-radius: 190px 190px 0 0;
+  pointer-events: none;
+}
+.nb-mega-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: rgba(241, 242, 236, 0.92);
+  color: var(--an-olive);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nb-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(38, 55, 45, 0.28);
+}
+
+/* ---------- Search overlay ---------- */
+.nb-search {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(241, 242, 236, 0.985);
+  display: flex;
+  justify-content: center;
+  padding: 18vh var(--an-pad) 40px;
+  overflow-y: auto;
+}
+.nb-search-close {
+  position: absolute;
+  top: 24px;
+  right: var(--an-pad);
+  color: var(--an-ink);
+}
+.nb-search-box {
+  width: 100%;
+  max-width: 760px;
+}
+.nb-search-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--an-gold);
+  color: var(--an-olive);
+}
+.nb-search-form input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: 0;
+  outline: 0;
+  font-family: var(--an-serif);
+  font-size: clamp(22px, 3.2vw, 34px);
+  color: var(--an-ink);
+}
+.nb-search-form input::placeholder { color: rgba(38, 55, 45, 0.4); }
+.nb-search-form input::-webkit-search-cancel-button { display: none; }
+.nb-search-go {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--an-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--an-gold);
+}
+.nb-suggest {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+}
+.nb-suggest a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--an-line);
+  color: var(--an-ink);
+  text-decoration: none;
+  font-family: var(--an-serif);
+  font-size: 20px;
+  transition: color 0.3s, padding-left 0.4s var(--an-ease);
+}
+.nb-suggest a:hover { color: var(--an-gold); padding-left: 8px; }
+.nb-suggest em {
+  font-family: var(--an-sans);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--an-beige);
+}
+.nb-suggest-empty {
+  margin-top: 28px;
+  font-size: 14px;
+  color: rgba(38, 55, 45, 0.7);
+}
+.nb-popular { margin-top: 34px; }
+.nb-popular div { display: flex; flex-wrap: wrap; gap: 10px; }
+.nb-popular button {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--an-beige);
+  color: var(--an-olive);
+  font-family: var(--an-sans);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+.nb-popular button:hover {
+  background: var(--an-olive);
+  border-color: var(--an-olive);
+  color: var(--an-ivory);
+}
+
+/* ---------- Mobile panel ---------- */
+.nb-m-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(38, 55, 45, 0.45);
+}
+.nb-m-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1201;
+  width: min(420px, 92vw);
+  background: var(--an-ivory);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.nb-m-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--an-line);
+}
+/* logo inside the mobile panel: always natural colors */
+.nb-m-head .nb-logo-img {
+  height: 44px;
+  filter: none;
+}
+.nb-m-head .nb-icon-btn { color: var(--an-ink); }
+.nb-m-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 20px;
+  flex: 1;
+}
+.nb-m-list li { border-bottom: 1px solid var(--an-line); }
+.nb-m-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--an-olive);
+  font-family: var(--an-serif);
+  font-size: 24px;
+  font-weight: 500;
+  text-align: left;
+}
+.nb-m-row svg { transition: transform 0.4s var(--an-ease); color: var(--an-gold); }
+.nb-m-row svg.is-rot { transform: rotate(45deg); }
+.nb-m-sub {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 12px 14px;
+  overflow: hidden;
+}
+.nb-m-sub li { border: 0; }
+.nb-m-sub a {
+  display: block;
+  padding: 10px 0;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--an-ink);
+  text-decoration: none;
+}
+.nb-m-sub a:hover { color: var(--an-gold); }
+.nb-m-sub .nb-m-all {
+  color: var(--an-gold);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.nb-m-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  padding: 20px;
+  border-top: 1px solid var(--an-line);
+  background: rgba(181, 166, 137, 0.14);
+}
+.nb-m-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--an-olive);
+  text-decoration: none;
+}
+
+/* ---------- Responsive ---------- */
+
+/* slightly smaller logo on laptops to free up room for the menu */
+@media (max-width: 1500px) {
+  .nb-logo-img { height: 46px; }
+  .nb.is-solid .nb-logo-img { height: 40px; }
+}
+
+/* laptop-narrow, tablet + mobile: burger menu, logo, icons – always visible while scrolling */
+@media (max-width: 1380px) {
+  .nb-center { display: none; }
+  .nb-burger { display: inline-flex; }
+  .nb-bar { grid-template-columns: 1fr auto; }
+  .nb-mega { display: none; }
+  .nb-backdrop { display: none; }
+}
+
+@media (max-width: 640px) {
+  :root { --nb-ann: 32px; }
+  .nb-announce p { font-size: 9px; letter-spacing: 0.16em; }
+  .nb-logo-img { height: 40px; max-width: 160px; }
+  .nb.is-solid .nb-logo-img { height: 36px; }
+  .nb-hide-sm { display: none; }
+  .nb-icon-btn { width: 40px; height: 40px; }
+  .nb-search { padding-top: 14vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-shell, .nb-shell *, .nb-search *, .nb-m-panel * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+/* ---------- Mega menu animation (CSS only) ---------- */
+@keyframes nb-fade-down { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes nb-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nb-slide-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+
+.nb-mega { animation: nb-fade-down 0.32s var(--an-ease) both; }
+.nb-mega-grid { animation: nb-fade-in 0.22s ease both; }
+.nb-mega-links li { animation: nb-slide-in 0.3s var(--an-ease) both; animation-delay: calc(var(--i, 0) * 0.04s); }
+.nb-backdrop { animation: nb-fade-in 0.25s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-mega, .nb-mega-grid, .nb-mega-links li, .nb-backdrop { animation: none !important; }
+}
+
+/* wrapper that isolates the navbar's DOM from page animations (no effect on layout) */
+.nb-root { display: contents; }
